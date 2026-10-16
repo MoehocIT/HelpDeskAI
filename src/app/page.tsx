@@ -6,7 +6,7 @@ type Ticket = {
   id: string;
   title: string;
   category: string;
-  priority: "Critical" | "High" | "Medium" | "Low";
+  priority: "High" | "Medium" | "Low";
   status: "Open" | "In Progress" | "Resolved";
   owner: string;
   date: string;
@@ -24,7 +24,7 @@ type ApiTicket = {
 };
 
 function mapApiTicket(raw: ApiTicket): Ticket {
-  const allowedPriority = ["Critical", "High", "Medium", "Low"];
+  const allowedPriority = ["High", "Medium", "Low"];
   const allowedStatus = ["Open", "In Progress", "Resolved"];
   const priority = allowedPriority.includes(raw.priority || "") ? raw.priority as Ticket["priority"] : "Medium";
   const status = allowedStatus.includes(raw.status || "") ? raw.status as Ticket["status"] : "Open";
@@ -285,9 +285,22 @@ export default function Home() {
 function StatCard({ label, value, change, icon, tone, note }: { label: string; value: string; change: string; icon: string; tone: string; note: string }) {
   return <div className="stat-card"><div className={`stat-icon ${tone}`}>{icon}</div><span className="stat-label">{label}</span><strong className="stat-value">{value}</strong><div className="stat-foot"><span className={tone === "orange" ? "orange-text" : "green-text"}>{change}</span><span>{note}</span></div></div>;
 }
+
 function Priority({ priority }: { priority: Ticket["priority"] }) {
-  return <span className={`priority priority-${priority.toLowerCase()}`}><i />{priority === "Critical" ? "Nghiêm trọng" : priority === "High" ? "Cao" : priority === "Medium" ? "Trung bình" : "Thấp"}</span>;
+  const labels = {
+    High: "Cao",
+    Medium: "Trung bình",
+    Low: "Thấp",
+  };
+
+  return (
+    <span className={`priority priority-${priority.toLowerCase()}`}>
+      <i />
+      {labels[priority]}
+    </span>
+  );
 }
+
 function Status({ status }: { status: Ticket["status"] }) {
   return <span className={`status status-${status.toLowerCase().replace(" ", "-")}`}><i />{status === "Open" ? "Đang mở" : status === "In Progress" ? "Đang xử lý" : "Đã giải quyết"}</span>;
 }
